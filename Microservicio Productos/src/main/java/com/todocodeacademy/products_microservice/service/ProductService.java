@@ -10,6 +10,8 @@ public interface ProductService {
 
     void deleteProduct(String productName);
 
+    void updateProduct(String productName, ProductDTO dto);
+
     ProductDTO getProductByName(String productName);
 
     List<ProductDTO> getAllProducts();
