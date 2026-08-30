@@ -40,6 +40,20 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
+    public void updateProduct(String productName, ProductDTO dto) {
+
+        Product product = repository.findProductByName(productName);
+
+        if (product != null) {
+
+            updateProduct(product, dto);
+
+            repository.save(product);
+        }
+    }
+
+    @Override
     public ProductDTO getProductByName(String productName) {
 
         Product product = repository.findProductByName(productName);
@@ -60,5 +74,12 @@ public class ProductServiceImpl implements ProductService {
         if (!products.isEmpty()) return products.stream().map(mapper::mapEntityToDTO).collect(Collectors.toList());
 
         return List.of();
+    }
+
+    private void updateProduct(Product entity, ProductDTO dto) {
+
+        entity.setName(dto.getName());
+        entity.setBrand(dto.getBrand());
+        entity.setUnitPrice(dto.getUnitPrice());
     }
 }
