@@ -1,6 +1,7 @@
 package com.todocodeacademy.cart_service.controller;
 
 import com.todocodeacademy.cart_service.dto.CartDTO;
+import com.todocodeacademy.cart_service.dto.ProductDTO;
 import com.todocodeacademy.cart_service.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +28,12 @@ public class CartController {
     public CartDTO getCartInfoByID(@PathVariable Long cartID) {
 
         return service.getCartInfoByID(cartID);
+    }
+
+    @GetMapping("/products/{name}")
+    public ProductDTO getProductInfoByName(@PathVariable String name) {
+
+        return service.getProductByName(name);
     }
 
     @PostMapping("/create")
