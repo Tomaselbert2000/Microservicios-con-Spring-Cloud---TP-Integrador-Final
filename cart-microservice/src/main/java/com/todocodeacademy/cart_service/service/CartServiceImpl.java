@@ -61,6 +61,12 @@ public class CartServiceImpl implements CartService {
         return List.of();
     }
 
+    @Override
+    public ProductDTO getProductByName(String productName) {
+
+        return apiClient.getProductInfoByName(productName);
+    }
+
     private void validateProductExistence(List<ProductDTO> products) {
 
         if (!products.isEmpty()) {
