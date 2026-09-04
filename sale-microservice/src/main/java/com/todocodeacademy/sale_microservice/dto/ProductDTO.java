@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProductDTO {
+public final class ProductDTO {
 
     private String productName;
     private String brand;
