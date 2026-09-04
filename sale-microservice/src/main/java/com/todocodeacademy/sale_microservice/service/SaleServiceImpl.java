@@ -10,6 +10,7 @@ import com.todocodeacademy.sale_microservice.model.Sale;
 import com.todocodeacademy.sale_microservice.repository.CartAPIClient;
 import com.todocodeacademy.sale_microservice.repository.SaleRepository;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,6 +55,7 @@ public class SaleServiceImpl implements SaleService {
 
     @Override
     @CircuitBreaker(name = "cart-microservice", fallbackMethod = "fallbackGetSaleInfoByID")
+    @Retry(name = "cart-microservice")
     public SaleDTO getSaleInfoByID(Long saleID) {
 
         try {
