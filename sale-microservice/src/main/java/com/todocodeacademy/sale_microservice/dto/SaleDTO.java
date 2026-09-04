@@ -3,6 +3,7 @@ package com.todocodeacademy.sale_microservice.dto;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -10,9 +11,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public final class CartDTO {
+public final class SaleDTO {
 
+    private Long saleID;
     private Long cartID;
-    private List<ProductDTO> products;
-    private BigDecimal total;
+    private LocalDateTime timestamp;
+    private BigDecimal saleTotal;
+    private List<String> productNameList;
 }
