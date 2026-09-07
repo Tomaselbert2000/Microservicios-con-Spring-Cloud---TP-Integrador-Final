@@ -1,6 +1,7 @@
 package com.todocodeacademy.cart_service.controller;
 
-import com.todocodeacademy.cart_service.dto.CartDTO;
+import com.todocodeacademy.cart_service.dto.CartRequestDTO;
+import com.todocodeacademy.cart_service.dto.CartResponseDTO;
 import com.todocodeacademy.cart_service.dto.ProductDTO;
 import com.todocodeacademy.cart_service.service.CartService;
 import lombok.RequiredArgsConstructor;
@@ -19,13 +20,13 @@ public class CartController {
     private final CartService service;
 
     @GetMapping("/all")
-    public List<CartDTO> getAllCarts() {
+    public List<CartResponseDTO> getAllCarts() {
 
         return service.getAllCarts();
     }
 
     @GetMapping("/{cartID}")
-    public CartDTO getCartInfoByID(@PathVariable Long cartID) {
+    public CartResponseDTO getCartInfoByID(@PathVariable Long cartID) {
 
         return service.getCartInfoByID(cartID);
     }
@@ -37,7 +38,7 @@ public class CartController {
     }
 
     @PostMapping("/create")
-    public String createCart(@RequestBody CartDTO dto) {
+    public String createCart(@RequestBody CartRequestDTO dto) {
 
         service.saveCart(dto);
 
