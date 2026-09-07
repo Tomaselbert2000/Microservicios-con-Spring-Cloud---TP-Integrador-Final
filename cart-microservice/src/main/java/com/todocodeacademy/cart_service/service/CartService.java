@@ -17,4 +17,8 @@ public interface CartService {
     List<CartResponseDTO> getAllCarts();
 
     ProductDTO getProductByName(String productName);
+
+    void addProductToCart(Long cartID, Long productID);
+
+    void removeProductFromCart(Long cartID, Long productID);
 }

@@ -10,6 +10,7 @@ import com.todocodeacademy.cart_service.model.Cart;
 import com.todocodeacademy.cart_service.repository.CartRepository;
 import com.todocodeacademy.cart_service.repository.ProductAPIClient;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,7 +46,7 @@ public class CartServiceImpl implements CartService {
     @Transactional
     public void deleteCart(Long cartID) {
 
-        Cart cart = repository.findById(cartID).orElseThrow(CartNotFoundException::new);
+        Cart cart = getCart(cartID);
 
         repository.delete(cart);
     }
@@ -53,7 +54,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public CartResponseDTO getCartInfoByID(Long cartID) {
 
-        Cart cart = repository.findById(cartID).orElseThrow(CartNotFoundException::new);
+        Cart cart = getCart(cartID);
 
         return buildCartResponse(cart);
     }
@@ -74,6 +75,61 @@ public class CartServiceImpl implements CartService {
     public ProductDTO getProductByName(String productName) {
 
         return apiClient.getProductInfoByName(productName);
+    }
+
+    @Override
+    @Transactional
+    public void addProductToCart(Long cartID, Long productID) {
+
+        Cart cart = getCart(cartID);
+
+        if (apiClient.getProductByID(productID) != null) {
+
+            cart.getProducts().add(productID);
+
+            updateCartTotal(cart, productID, CART_CHANGE.ADD_PRODUCT);
+
+            repository.save(cart);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void removeProductFromCart(Long cartID, Long productID) {
+
+        Cart cart = getCart(cartID);
+
+        if(cart.getProducts().remove(productID)){
+
+            updateCartTotal(cart, productID, CART_CHANGE.REMOVE_PRODUCT);
+
+            repository.save(cart);
+        }
+    }
+
+    private void updateCartTotal(Cart cart, Long productID, CART_CHANGE operation) {
+
+        switch (operation) {
+
+            case ADD_PRODUCT -> {
+
+                BigDecimal price = apiClient.getProductByID(productID).getUnitPrice();
+
+                cart.setTotal(cart.getTotal().add(price));
+            }
+
+            case REMOVE_PRODUCT -> {
+
+                BigDecimal price = apiClient.getProductByID(productID).getUnitPrice();
+
+                cart.setTotal(cart.getTotal().subtract(price));
+            }
+        }
+    }
+
+    private @NonNull Cart getCart(Long cartID) {
+
+        return repository.findById(cartID).orElseThrow(CartNotFoundException::new);
     }
 
     private void validateProductExistence(List<Long> productIDs) {
@@ -124,5 +180,11 @@ public class CartServiceImpl implements CartService {
                 .toList();
 
         return mapper.mapEntityToDTO(cart, dtos);
+    }
+
+    public enum CART_CHANGE {
+
+        ADD_PRODUCT,
+        REMOVE_PRODUCT
     }
 }
