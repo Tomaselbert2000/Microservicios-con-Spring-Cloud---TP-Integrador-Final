@@ -1,39 +1,33 @@
 package com.todocodeacademy.cart_service.mapper;
 
-import com.todocodeacademy.cart_service.dto.CartDTO;
+import com.todocodeacademy.cart_service.dto.CartResponseDTO;
 import com.todocodeacademy.cart_service.dto.ProductDTO;
 import com.todocodeacademy.cart_service.model.Cart;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static com.todocodeacademy.cart_service.mapper.MapperHelper.checkIfMapperInputIsNull;
 
 @Component
 public class CartMapper {
 
-    public Cart mapDTOtoEntity(CartDTO dto) {
+    public Cart mapDTOtoEntity(List<Long> productIDs, BigDecimal total) {
 
-        checkIfMapperInputIsNull(dto);
-
-        BigDecimal total = new BigDecimal("0");
-
-        for (ProductDTO product : dto.getProducts()) {
-
-            total = total.add(product.getUnitPrice());
-        }
+        checkIfMapperInputIsNull(productIDs, total);
 
         return Cart.builder()
-                .products(dto.getProducts())
+                .products(productIDs)
                 .total(total)
                 .build();
     }
 
-    public CartDTO mapEntityToDTO(Cart cart) {
+    public CartResponseDTO mapEntityToDTO(Cart cart, List<ProductDTO> products) {
 
-        return CartDTO.builder()
+        return CartResponseDTO.builder()
                 .cartID(cart.getCartID())
-                .products(cart.getProducts())
+                .products(products)
                 .total(cart.getTotal())
                 .build();
     }

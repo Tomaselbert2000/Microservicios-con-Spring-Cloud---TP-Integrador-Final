@@ -1,19 +1,20 @@
 package com.todocodeacademy.cart_service.service;
 
-import com.todocodeacademy.cart_service.dto.CartDTO;
+import com.todocodeacademy.cart_service.dto.CartRequestDTO;
+import com.todocodeacademy.cart_service.dto.CartResponseDTO;
 import com.todocodeacademy.cart_service.dto.ProductDTO;
 
 import java.util.List;
 
 public interface CartService {
 
-    void saveCart(CartDTO dto);
+    void saveCart(CartRequestDTO dto);
 
     void deleteCart(Long cartID);
 
-    CartDTO getCartInfoByID(Long cartID);
+    CartResponseDTO getCartInfoByID(Long cartID);
 
-    List<CartDTO> getAllCarts();
+    List<CartResponseDTO> getAllCarts();
 
     ProductDTO getProductByName(String productName);
 }
