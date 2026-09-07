@@ -9,8 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.todocodeacademy.cart_service.constants.StringResource.ControllerConstants.CART_CREATED_SUCCESSFULLY;
-import static com.todocodeacademy.cart_service.constants.StringResource.ControllerConstants.CART_DELETED_SUCCESSFULLY;
+import static com.todocodeacademy.cart_service.constants.StringResource.ControllerConstants.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -51,5 +50,21 @@ public class CartController {
         service.deleteCart(cartID);
 
         return CART_DELETED_SUCCESSFULLY;
+    }
+
+    @PostMapping("/{cartID}/products/{productID}")
+    public String addProductToCart(@PathVariable Long cartID, @PathVariable Long productID) {
+
+        service.addProductToCart(cartID, productID);
+
+        return PRODUCT_ADDED_SUCCESSFULLY;
+    }
+
+    @DeleteMapping("/{cartID}/products/{productID}")
+    public String removeProductFromCart(@PathVariable Long cartID, @PathVariable Long productID) {
+
+        service.removeProductFromCart(cartID, productID);
+
+        return PRODUCT_REMOVED_SUCCESSFULLY;
     }
 }
