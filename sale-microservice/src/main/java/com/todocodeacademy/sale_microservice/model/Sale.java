@@ -1,9 +1,6 @@
 package com.todocodeacademy.sale_microservice.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -21,4 +18,10 @@ public class Sale {
     private Long saleID;
     private LocalDateTime timestamp;
     private Long cartID;
+
+    @PrePersist
+    private void setTimestamp() {
+
+        this.timestamp = LocalDateTime.now();
+    }
 }
