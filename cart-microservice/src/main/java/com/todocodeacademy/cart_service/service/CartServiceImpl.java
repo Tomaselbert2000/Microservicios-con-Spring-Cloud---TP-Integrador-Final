@@ -9,6 +9,8 @@ import com.todocodeacademy.cart_service.mapper.CartMapper;
 import com.todocodeacademy.cart_service.model.Cart;
 import com.todocodeacademy.cart_service.repository.CartRepository;
 import com.todocodeacademy.cart_service.repository.ProductAPIClient;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.todocodeacademy.cart_service.factory.DTOFactory.errorDTO;
 
 @Service
 @RequiredArgsConstructor
@@ -72,9 +76,18 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    @CircuitBreaker(name = "product-microservice", fallbackMethod = "fallbackGetProductByName")
+    @Retry(name = "product-microservice")
     public ProductDTO getProductByName(String productName) {
 
-        return apiClient.getProductInfoByName(productName);
+        try {
+
+            return apiClient.getProductInfoByName(productName);
+
+        } catch (Exception exception) {
+
+            return fallbackGetProductByName(productName, exception);
+        }
     }
 
     @Override
@@ -99,7 +112,7 @@ public class CartServiceImpl implements CartService {
 
         Cart cart = getCart(cartID);
 
-        if(cart.getProducts().remove(productID)){
+        if (cart.getProducts().remove(productID)) {
 
             updateCartTotal(cart, productID, CART_CHANGE.REMOVE_PRODUCT);
 
@@ -186,5 +199,10 @@ public class CartServiceImpl implements CartService {
 
         ADD_PRODUCT,
         REMOVE_PRODUCT
+    }
+
+    public ProductDTO fallbackGetProductByName(String name, Throwable throwable) {
+
+        return errorDTO(name, throwable);
     }
 }
