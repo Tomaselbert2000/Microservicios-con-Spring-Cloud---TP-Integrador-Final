@@ -16,7 +16,7 @@ public class ProductMapperImpl implements ProductMapper {
         checkIfMapperInputIsNull(dto);
 
         return Product.builder()
-                .name(dto.getName())
+                .name(dto.getProductName())
                 .brand(dto.getBrand())
                 .unitPrice(dto.getUnitPrice())
                 .build();
@@ -28,7 +28,7 @@ public class ProductMapperImpl implements ProductMapper {
         checkIfMapperInputIsNull(entity);
 
         return ProductDTO.builder()
-                .name(entity.getName())
+                .productName(entity.getName())
                 .brand(entity.getBrand())
                 .unitPrice(entity.getUnitPrice())
                 .build();
