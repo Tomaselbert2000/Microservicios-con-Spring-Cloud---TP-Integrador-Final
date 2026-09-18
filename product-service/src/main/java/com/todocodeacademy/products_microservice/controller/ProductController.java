@@ -16,10 +16,16 @@ public class ProductController {
 
     private final ProductService service;
 
-    @GetMapping("/{name}")
+    @GetMapping("/name/{name}")
     public ProductDTO getProductByName(@PathVariable String name) {
 
         return service.getProductByName(name);
+    }
+
+    @GetMapping("/{id}")
+    public ProductDTO getProductByID(@PathVariable Long id){
+
+        return service.getProductByID(id);
     }
 
     @GetMapping("/all")
