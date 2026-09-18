@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Builder
 public final class ProductDTO {
 
-    private String name;
+    private String productName;
     private String brand;
     private BigDecimal unitPrice;
 }

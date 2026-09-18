@@ -86,7 +86,7 @@ public class ProductServiceImpl implements ProductService {
 
     private void updateProduct(Product entity, ProductDTO dto) {
 
-        entity.setName(dto.getName());
+        entity.setName(dto.getProductName());
         entity.setBrand(dto.getBrand());
         entity.setUnitPrice(dto.getUnitPrice());
     }
