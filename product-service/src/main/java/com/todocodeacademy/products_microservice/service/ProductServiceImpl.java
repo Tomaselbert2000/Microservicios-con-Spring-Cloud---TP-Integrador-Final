@@ -76,6 +76,14 @@ public class ProductServiceImpl implements ProductService {
         return List.of();
     }
 
+    @Override
+    public ProductDTO getProductByID(Long id) {
+
+        Product product = repository.findById(id).orElseThrow();
+
+        return mapper.mapEntityToDTO(product);
+    }
+
     private void updateProduct(Product entity, ProductDTO dto) {
 
         entity.setName(dto.getName());
