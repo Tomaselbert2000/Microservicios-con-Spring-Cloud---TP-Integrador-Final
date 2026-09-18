@@ -11,6 +11,6 @@ public interface ProductAPIClient {
     @GetMapping("products/{id}")
     ProductDTO getProductByID(@PathVariable Long id);
 
-    @GetMapping("/products/{name}")
+    @GetMapping("/products/name/{name}")
     ProductDTO getProductInfoByName(@PathVariable String name);
 }
