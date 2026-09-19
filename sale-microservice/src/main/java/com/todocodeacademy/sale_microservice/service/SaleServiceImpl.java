@@ -22,6 +22,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SaleServiceImpl implements SaleService {
 
+    private static final Long FALLBACK_ID = -999999L;
+    private static final BigDecimal FALLBACK_PRICE = BigDecimal.valueOf(0.0);
+
     private final SaleMapper mapper;
     private final SaleRepository repository;
     private final CartAPIClient apiClient;
@@ -58,21 +61,16 @@ public class SaleServiceImpl implements SaleService {
     @Retry(name = "cart-microservice")
     public SaleDTO getSaleInfoByID(Long saleID) {
 
-        try {
+        Sale sale = loadSale(saleID);
 
-            Sale sale = loadSale(saleID);
+        CartDTO cartDTO = loadCart(sale.getCartID());
 
-            CartDTO cartDTO = loadCart(sale.getCartID());
-
-            return mapper.mapEntityToDTO(sale, cartDTO);
-
-        } catch (Exception e) {
-
-            return fallbackGetSaleInfoByID();
-        }
+        return mapper.mapEntityToDTO(sale, cartDTO);
     }
 
     @Override
+    @CircuitBreaker(name = "cart-microservice", fallbackMethod = "fallbackGetSales")
+    @Retry(name = "cart-microservice")
     public List<SaleDTO> getSales() {
 
         List<Sale> sales = repository.findAll();
@@ -107,14 +105,24 @@ public class SaleServiceImpl implements SaleService {
         return apiClient.getCartInfoByID(cartID);
     }
 
-    public SaleDTO fallbackGetSaleInfoByID() {
+    public SaleDTO fallbackGetSaleInfoByID(Long saleID, Throwable throwable) {
+
+        return buildFallbackDTO(saleID, throwable);
+    }
+
+    public List<SaleDTO> fallbackGetSales(Throwable throwable) {
+
+        return List.of(buildFallbackDTO(FALLBACK_ID, throwable));
+    }
+
+    private SaleDTO buildFallbackDTO(Long saleID, Throwable throwable) {
 
         return SaleDTO.builder()
-                .saleID(-99999999L)
-                .cartID(-99999999L)
+                .saleID(saleID)
+                .cartID(FALLBACK_ID)
                 .timestamp(null)
-                .saleTotal(BigDecimal.valueOf(0.0))
-                .productNameList(List.of("Hubo un error al procesar la información de venta. Intente nuevamente."))
+                .saleTotal(FALLBACK_PRICE)
+                .productNameList(List.of("Error: " + throwable.getMessage()))
                 .build();
     }
 }
