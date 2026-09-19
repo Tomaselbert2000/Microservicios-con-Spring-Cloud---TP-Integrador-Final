@@ -9,6 +9,7 @@ import com.todocodeacademy.sale_microservice.mapper.SaleMapper;
 import com.todocodeacademy.sale_microservice.model.Sale;
 import com.todocodeacademy.sale_microservice.repository.CartAPIClient;
 import com.todocodeacademy.sale_microservice.repository.SaleRepository;
+import feign.FeignException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
@@ -116,6 +117,8 @@ public class SaleServiceImpl implements SaleService {
     }
 
     private SaleDTO buildFallbackDTO(Long saleID, Throwable throwable) {
+
+        if (throwable instanceof FeignException.NotFound) throw new CartNotFoundException();
 
         return SaleDTO.builder()
                 .saleID(saleID)
