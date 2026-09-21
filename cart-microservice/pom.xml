@@ -9,8 +9,8 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.todocodeacademy</groupId>
-    <artifactId>cart-service</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <artifactId>cart-microservice</artifactId>
+    <version>0.0.1</version>
     <name/>
     <description/>
     <url/>
