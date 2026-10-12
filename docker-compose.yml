@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  eureka-server:
+    build: ./eureka-server
+    container_name: eureka_server
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - microservicios-network
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api_gateway
+    ports:
+      - "9000:9000"
+    depends_on:
+      - eureka-server
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - microservicios-network
+
+  product-service:
+    build: ./product-service
+    container_name: product_service
+    ports:
+      - "8000:8000"
+    depends_on:
+      - eureka-server
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - microservicios-network
+
+  cart-microservice:
+    build: ./cart-microservice
+    container_name: cart_microservice
+    ports:
+      - "8010:8010"
+    depends_on:
+      - eureka-server
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - microservicios-network
+
+  sale-microservice:
+    build: ./sale-microservice
+    container_name: sale_microservice
+    ports:
+      - "8020:8020"
+    depends_on:
+      - eureka-server
+      - product-service
+      - cart-microservice
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - microservicios-network
+
+networks:
+  microservicios-network:
+    driver: bridge
